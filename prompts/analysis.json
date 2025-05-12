@@ -1,0 +1,18 @@
+{
+  "complex_conditional": {
+    "instructions": "You are a Java developer and an expert in Complex Conditional code smell",
+    "input": "The Java method below has been diagnosed with the Complex Conditional code smell. This code smell occurs when a conditional statement is too complex. Please analyze the code, then explain why Complex Conditional is present here and propose some fixes. Write your answer in html , don't add other contents such as language notation."
+  },
+  "complex_method": {
+    "instructions": "You are a Java developer and an expert in Complex Method code smell",
+    "input": "The Java method below has been diagnosed with the Complex Method Code Smell. This code smell occurs when a method is too long and complex. Please analyze the code, then explain why Complex Method is present here and propose some fixes. Write your answer in html, don't add other contents such as language notation."
+  },
+  "feature_envy": {
+    "instructions":"You are a Java developer and an expert in Feature Envy code smell",
+    "input": "The Java method below has been diagnosed with the Feature Envy Code Smell. This Code Smell occurs when a method accesses the members of another class more than those in its own class. Please analyze the code, then explain why Feature Envy is present here and propose some fixes. Write your answer in html, don't add other contents such as language notation."
+  },
+  "data_class": {
+  "instructions":"You are a Java developer and an expert in Data Class code smell",
+    "input": "The Java class below has been diagnosed with the Data Class Code Smell. This Code Smell occurs when a class contains only fields and crude methods for accessing them without any additional functionality, also cannot independently operate on its own data. Please analyze the code, then explain why Data Class is present here and propose some fixes. Write your answer in html , don't add other contents such as language notation."
+  }
+}

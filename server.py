@@ -36,23 +36,34 @@ encoders = {}
 classifiers = {}
 thresholds = {}
 tokenizer = AutoTokenizer.from_pretrained('microsoft/unixcoder-base', padding_side="right")
+for smell in code_smells:
+    encoders[smell] = AutoModelForSequenceClassification.from_pretrained(f'models/{smell}/unixcoder', use_safetensors=True).roberta
+    encoders[smell].to(device)
+    encoders[smell].eval()
+    classifiers[smell] = XGBClassifier()
+    classifiers[smell].load_model(f'models/{smell}/xgb.json')
+    with open(f'models/{smell}/threshold.txt', 'r') as file:
+        thresholds[smell] = float(file.read())
+
+    
+    
+# detect_cache = {}
+# for smell in code_smells:
+#     detect_cache[smell] = {}
+def avg_pool(token_emb, mask):
+    return ((token_emb * mask.unsqueeze(-1)).sum(1) / mask.sum(-1).unsqueeze(-1)).detach().cpu()
 
 def tokenize(text):
     outputs = tokenizer(text, truncation=True, padding="max_length", max_length=1024)
     return outputs
 
-for smell in code_smells:
-    encoders[smell] = AutoModelForSequenceClassification.from_pretrained(f'models/{smell}/unixcoder', use_safetensors=True).roberta
-    encoders[smell].device()
-    classifiers[smell] = XGBClassifier()
-    classifiers[smell].load_model(f'/models/{smell}/xgb.json')
-    with open(f'/models/{smell}/threshold.txt', 'r') as file:
-        thresholds[smell] = float(file.read())
-    
-    
-detect_cache = {}
-for smell in code_smells:
-    detect_cache[smell] = {}
+def detect(smell, sourceCode):
+    with torch.no_grad():
+        tokens = tokenize(sourceCode)
+        out = encoders[smell](input_ids=torch.tensor(tokens['input_ids']).to(device).reshape(1,-1), attention_mask=torch.tensor(tokens['attention_mask']).to(device).reshape(1,-1))
+        emb: torch.Tensor = avg_pool(out.last_hidden_state, torch.tensor(tokens['attention_mask']).to(device).reshape(1,-1) )
+        proba = classifiers[smell].predict_proba(emb.detach().numpy())[:,1].item()
+    return int(proba > thresholds[smell])
 
 
 @app.route("/detect", methods=["POST"])
@@ -60,10 +71,11 @@ def detectCodeSmells():
     response = {}
     try:
         body = request.get_json(force=True)
-        if body['type'] == 'complex_conditional':
-            response['label'] = 1
-        elif body['type'] == 'complex_method':
-            response['label'] = 1
+        for smell in code_smells:
+            if body['type'] == smell:
+                response['label'] = detect(smell, body['sourceCode'])
+                print(smell + ' ' + str(response['label']))
+                break
         
     except Exception as e:
         print(e)

@@ -1,0 +1,12 @@
+{
+    "complex_conditional": {
+      "instructions": "You are a Java developer and an expert in Complex Conditional code smell",
+      "input": "The Java method below has been diagnosed with the Complex Conditional code smell. This code smell occurs when a conditional statement is too complex. Please refactor the method to remove the Complex Conditional code smell. Possible methods are moving parts of the code into a new method, breaking the complex conditional statement into simpler statements, moving logical expressions into separate variables etc. You can also come up with your own idea and improve the code in your own way, as long as the Complex Conditional code smell is removed. In your answer, place \\n```java\\n before each method and \\n```n\\n after each method. Do not add other contents."
+    }, "complex_method": {
+      "instructions": "You are a Java developer and an expert in Complex Method code smell",
+      "input": "The Java method below has been diagnosed with the Complex Method code smell. This code smell occurs when a method is too long and complex. Please refactor the method to remove the Complex Method code smell. Possible methods are simplifying conditionals and loops, moving parts of the code into a new method etc. You can also come up with your own idea and improve the code in your own way, as long as the Complex Method code smell is removed. In your answer, place \\n```java\\n before each method and \\n```n\\n after each method. Do not add other contents."
+    }
+}
+
+
+  

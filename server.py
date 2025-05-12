@@ -2,7 +2,7 @@ import os
 os.environ['KMP_DUPLICATE_LIB_OK']='True'
 import torch
 from flask import Flask, jsonify, request
-from transformers import AutoModel, AutoTokenizer, AutoModelForS
+from transformers import AutoModel, AutoTokenizer
 import numpy as np
 import pickle
 import openai

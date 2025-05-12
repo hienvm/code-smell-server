@@ -2,11 +2,12 @@ import os
 os.environ['KMP_DUPLICATE_LIB_OK']='True'
 import torch
 from flask import Flask, jsonify, request
-from transformers import AutoModel, AutoTokenizer, AutoModelForS
+from transformers import AutoModel, AutoTokenizer, AutoModelForSequenceClassification
 import numpy as np
 import pickle
 import openai
 import json
+from xgboost import XGBClassifier
 
 
 app = Flask("Code Smells Detection")
@@ -29,15 +30,25 @@ code_smells = [
     'complex_conditional',
     'complex_method'
     ]
+
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+encoders = {}
 classifiers = {}
+thresholds = {}
+tokenizer = AutoTokenizer.from_pretrained('microsoft/unixcoder-base', padding_side="right")
+
+def tokenize(text):
+    outputs = tokenizer(text, truncation=True, padding="max_length", max_length=1024)
+    return outputs
+
 for smell in code_smells:
-    Au
-    classifiers[smell] = pickle.load(file)
-    classifiers[smell] = get_model(smell)
-    file.close()
+    encoders[smell] = AutoModelForSequenceClassification.from_pretrained(f'models/{smell}/unixcoder', use_safetensors=True).roberta
+    encoders[smell].device()
+    classifiers[smell] = XGBClassifier()
+    classifiers[smell].load_model(f'/models/{smell}/xgb.json')
+    with open(f'/models/{smell}/threshold.txt', 'r') as file:
+        thresholds[smell] = float(file.read())
     
-
-
     
 detect_cache = {}
 for smell in code_smells:
